@@ -97,6 +97,7 @@ import com.android.inputmethod.latin.utils.StatsUtils;
 import com.android.inputmethod.latin.utils.StatsUtilsManager;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import com.android.inputmethod.latin.utils.ViewLayoutUtils;
+import com.sujitech.tessercubecore.widget.KeyboardEncryptView;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -171,6 +172,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private final BroadcastReceiver mDictionaryDumpBroadcastReceiver =
             new DictionaryDumpBroadcastReceiver(this);
+    private KeyboardEncryptView mKeyboardEncryptView;
 
     final static class HideSoftInputReceiver extends BroadcastReceiver {
         private final InputMethodService mIms;
@@ -796,6 +798,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mInsetsUpdater = ViewOutlineProviderCompatUtils.setInsetsOutlineProvider(view);
         updateSoftInputWindowLayoutParameters();
         mSuggestionStripView = (SuggestionStripView)view.findViewById(R.id.suggestion_strip_view);
+        mKeyboardEncryptView = (KeyboardEncryptView) view.findViewById(R.id.keyboard_encrypt_view);
         if (hasSuggestionStripView()) {
             mSuggestionStripView.setListener(this, view);
         }
@@ -1204,7 +1207,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final int suggestionsHeight = (!mKeyboardSwitcher.isShowingEmojiPalettes()
                 && mSuggestionStripView.getVisibility() == View.VISIBLE)
                 ? mSuggestionStripView.getHeight() : 0;
-        final int visibleTopY = inputHeight - visibleKeyboardView.getHeight() - suggestionsHeight;
+        final int encryptHeight = (mKeyboardEncryptView.getVisibility() == View.VISIBLE) ? mKeyboardEncryptView.getHeight() : 0;
+        final int visibleTopY = inputHeight - visibleKeyboardView.getHeight() - suggestionsHeight - encryptHeight;
         mSuggestionStripView.setMoreSuggestionsHeight(visibleTopY);
         // Need to set expanded touchable region only if a keyboard view is being shown.
         if (visibleKeyboardView.isShown()) {

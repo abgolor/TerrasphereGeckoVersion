@@ -52,11 +52,13 @@ import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.suggestions.MoreSuggestionsView.MoreSuggestionsListener;
 import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
+import com.sujitech.tessercubecore.widget.KeyboardEncryptView;
 
 import java.util.ArrayList;
 
 public final class SuggestionStripView extends RelativeLayout implements OnClickListener,
         OnLongClickListener {
+
     public interface Listener {
         public void showImportantNoticeContents();
         public void pickSuggestionManually(SuggestedWordInfo word);
@@ -68,8 +70,10 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
     private final ViewGroup mSuggestionsStrip;
     private final ImageButton mVoiceKey;
+    private final ImageButton mEncryptKey;
     private final View mImportantNoticeStrip;
     MainKeyboardView mMainKeyboardView;
+    private KeyboardEncryptView mKeyboardEncryptView;
 
     private final View mMoreSuggestionsContainer;
     private final MoreSuggestionsView mMoreSuggestionsView;
@@ -140,6 +144,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
         mSuggestionsStrip = (ViewGroup)findViewById(R.id.suggestions_strip);
         mVoiceKey = (ImageButton)findViewById(R.id.suggestions_strip_voice_key);
+        mEncryptKey = (ImageButton) findViewById(R.id.suggestions_strip_encrypt_key);
         mImportantNoticeStrip = findViewById(R.id.important_notice_strip);
         mStripVisibilityGroup = new StripVisibilityGroup(this, mSuggestionsStrip,
                 mImportantNoticeStrip);
@@ -178,6 +183,8 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         keyboardAttr.recycle();
         mVoiceKey.setImageDrawable(iconVoice);
         mVoiceKey.setOnClickListener(this);
+        mEncryptKey.setImageDrawable(iconVoice);
+        mEncryptKey.setOnClickListener(this);
     }
 
     /**
@@ -187,6 +194,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     public void setListener(final Listener listener, final View inputView) {
         mListener = listener;
         mMainKeyboardView = (MainKeyboardView)inputView.findViewById(R.id.keyboard_view);
+        mKeyboardEncryptView = (KeyboardEncryptView) inputView.findViewById(R.id.keyboard_encrypt_view);
     }
 
     public void updateVisibility(final boolean shouldBeVisible, final boolean isFullscreenMode) {
@@ -455,6 +463,10 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
                     Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE,
                     false /* isKeyRepeat */);
             return;
+        }
+
+        if (view == mEncryptKey) {
+            mKeyboardEncryptView.toggle();
         }
 
         final Object tag = view.getTag();
