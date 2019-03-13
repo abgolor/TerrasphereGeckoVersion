@@ -19,13 +19,12 @@ package com.android.inputmethod.latin.settings;
 import com.android.inputmethod.latin.permissions.PermissionsManager;
 import com.android.inputmethod.latin.utils.FragmentUtils;
 import com.android.inputmethod.latin.utils.StatsUtils;
-import com.android.inputmethod.latin.utils.StatsUtilsManager;
 
 import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import android.support.v4.app.ActivityCompat;
+import androidx.core.app.ActivityCompat;
 import android.view.MenuItem;
 
 public final class SettingsActivity extends PreferenceActivity
