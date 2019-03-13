@@ -51,6 +51,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
@@ -1098,6 +1099,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mKeyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState(),
                     getCurrentRecapitalizeState());
         }
+    }
+
+    @Override
+    public InputConnection getCurrentInputConnection() {
+        if (mKeyboardEncryptView != null && mKeyboardEncryptView.getVisibility() == View.VISIBLE) {
+            return mKeyboardEncryptView.createInputConnection();
+        }
+        return super.getCurrentInputConnection();
     }
 
     /**
