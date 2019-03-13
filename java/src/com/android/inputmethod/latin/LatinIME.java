@@ -51,6 +51,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodSubtype;
 
@@ -115,7 +116,7 @@ import javax.annotation.Nonnull;
 public class LatinIME extends InputMethodService implements KeyboardActionListener,
         SuggestionStripView.Listener, SuggestionStripViewAccessor,
         DictionaryFacilitator.DictionaryInitializationListener,
-        PermissionsManager.PermissionsResultCallback {
+        PermissionsManager.PermissionsResultCallback, KeyboardEncryptView.Listener {
     static final String TAG = LatinIME.class.getSimpleName();
     private static final boolean TRACE = false;
 
@@ -174,6 +175,19 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private final BroadcastReceiver mDictionaryDumpBroadcastReceiver =
             new DictionaryDumpBroadcastReceiver(this);
     private KeyboardEncryptView mKeyboardEncryptView;
+
+    @Override
+    public @Nonnull String requireAllText() {
+        return super.getCurrentInputConnection().getExtractedText(new ExtractedTextRequest(), 0).text.toString();
+    }
+
+    @Override
+    public void overrideAllText(@Nonnull String text) {
+        InputConnection ic = super.getCurrentInputConnection();
+        int length = ic.getExtractedText(new ExtractedTextRequest(), 0).text.length();
+        ic.deleteSurroundingText(length, 0);
+        ic.commitText(text, text.length());
+    }
 
     final static class HideSoftInputReceiver extends BroadcastReceiver {
         private final InputMethodService mIms;
@@ -802,6 +816,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mKeyboardEncryptView = (KeyboardEncryptView) view.findViewById(R.id.keyboard_encrypt_view);
         if (hasSuggestionStripView()) {
             mSuggestionStripView.setListener(this, view);
+        }
+        if (mKeyboardEncryptView != null) {
+            mKeyboardEncryptView.setListener(this);
         }
     }
 
