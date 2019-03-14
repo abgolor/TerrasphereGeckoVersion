@@ -99,6 +99,7 @@ import com.android.inputmethod.latin.utils.StatsUtils;
 import com.android.inputmethod.latin.utils.StatsUtilsManager;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import com.android.inputmethod.latin.utils.ViewLayoutUtils;
+import com.sujitech.tessercubecore.widget.KeyboardEncryptToolBar;
 import com.sujitech.tessercubecore.widget.KeyboardEncryptView;
 
 import java.io.FileDescriptor;
@@ -116,7 +117,7 @@ import javax.annotation.Nonnull;
 public class LatinIME extends InputMethodService implements KeyboardActionListener,
         SuggestionStripView.Listener, SuggestionStripViewAccessor,
         DictionaryFacilitator.DictionaryInitializationListener,
-        PermissionsManager.PermissionsResultCallback, KeyboardEncryptView.Listener {
+        PermissionsManager.PermissionsResultCallback, KeyboardEncryptToolBar.Listener {
     static final String TAG = LatinIME.class.getSimpleName();
     private static final boolean TRACE = false;
 
@@ -816,10 +817,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mKeyboardEncryptView = (KeyboardEncryptView) view.findViewById(R.id.keyboard_encrypt_view);
         if (hasSuggestionStripView()) {
             mSuggestionStripView.setListener(this, view);
+            mSuggestionStripView.setEncryptToolBarListener(this);
         }
-        if (mKeyboardEncryptView != null) {
-            mKeyboardEncryptView.setListener(this);
-        }
+//        if (mKeyboardEncryptView != null) {
+//            mKeyboardEncryptView.setListener(this);
+//        }
     }
 
     @Override
