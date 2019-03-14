@@ -52,21 +52,30 @@
             android:textSize="16sp"
             style="?attr/suggestionWordStyle" />
     </LinearLayout>
+    <com.sujitech.tessercubecore.widget.KeyboardEncryptToolBar
+        android:id="@+id/keyboard_encrypt_toolbar"
+        android:visibility="gone"
+        android:layout_marginTop="-4dp"
+        android:padding="0dp"
+        style="?attr/suggestionStripViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/config_suggestions_strip_horizontal_margin" />
+    <!--<ImageButton-->
+        <!--android:id="@+id/suggestions_strip_voice_key"-->
+        <!--android:layout_width="@dimen/config_suggestions_strip_edge_key_width"-->
+        <!--android:layout_height="fill_parent"-->
+        <!--android:layout_toLeftOf="@id/suggestions_strip_encrypt_key"-->
+        <!--android:layout_toStartOf="@id/suggestions_strip_encrypt_key"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:contentDescription="@string/spoken_description_mic"-->
+        <!--style="?attr/suggestionWordStyle" />-->
     <ImageButton
-        android:id="@+id/suggestions_strip_voice_key"
-        android:layout_width="@dimen/config_suggestions_strip_edge_key_width"
-        android:layout_height="fill_parent"
-        android:layout_toLeftOf="@id/suggestions_strip_encrypt_key"
-        android:layout_toStartOf="@id/suggestions_strip_encrypt_key"
-        android:layout_centerVertical="true"
-        android:contentDescription="@string/spoken_description_mic"
-        style="?attr/suggestionWordStyle" />
-    <ImageButton
+        android:src="@drawable/ic_keyboard_toggle_icon"
         android:id="@+id/suggestions_strip_encrypt_key"
         android:layout_width="@dimen/config_suggestions_strip_edge_key_width"
-        android:layout_height="fill_parent"
+        android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:contentDescription="@string/spoken_description_mic"
         style="?attr/suggestionWordStyle" />

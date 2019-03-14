@@ -36,7 +36,9 @@ import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.keyboard.Keyboard;
@@ -52,12 +54,14 @@ import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.suggestions.MoreSuggestionsView.MoreSuggestionsListener;
 import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
+import com.sujitech.tessercubecore.widget.KeyboardEncryptToolBar;
 import com.sujitech.tessercubecore.widget.KeyboardEncryptView;
 
 import java.util.ArrayList;
 
 public final class SuggestionStripView extends RelativeLayout implements OnClickListener,
         OnLongClickListener {
+
 
     public interface Listener {
         public void showImportantNoticeContents();
@@ -69,11 +73,12 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     private static final float DEBUG_INFO_TEXT_SIZE_IN_DIP = 6.0f;
 
     private final ViewGroup mSuggestionsStrip;
-    private final ImageButton mVoiceKey;
+//    private final ImageButton mVoiceKey;
     private final ImageButton mEncryptKey;
     private final View mImportantNoticeStrip;
     MainKeyboardView mMainKeyboardView;
     private KeyboardEncryptView mKeyboardEncryptView;
+    private final KeyboardEncryptToolBar mEncryptToolBar;
 
     private final View mMoreSuggestionsContainer;
     private final MoreSuggestionsView mMoreSuggestionsView;
@@ -143,8 +148,9 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         inflater.inflate(R.layout.suggestions_strip, this);
 
         mSuggestionsStrip = (ViewGroup)findViewById(R.id.suggestions_strip);
-        mVoiceKey = (ImageButton)findViewById(R.id.suggestions_strip_voice_key);
+//        mVoiceKey = (ImageButton)findViewById(R.id.suggestions_strip_voice_key);
         mEncryptKey = (ImageButton) findViewById(R.id.suggestions_strip_encrypt_key);
+        mEncryptToolBar = findViewById(R.id.keyboard_encrypt_toolbar);
         mImportantNoticeStrip = findViewById(R.id.important_notice_strip);
         mStripVisibilityGroup = new StripVisibilityGroup(this, mSuggestionsStrip,
                 mImportantNoticeStrip);
@@ -179,11 +185,11 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
         final TypedArray keyboardAttr = context.obtainStyledAttributes(attrs,
                 R.styleable.Keyboard, defStyle, R.style.SuggestionStripView);
-        final Drawable iconVoice = keyboardAttr.getDrawable(R.styleable.Keyboard_iconShortcutKey);
+//        final Drawable iconVoice = keyboardAttr.getDrawable(R.styleable.Keyboard_iconShortcutKey);
         keyboardAttr.recycle();
-        mVoiceKey.setImageDrawable(iconVoice);
-        mVoiceKey.setOnClickListener(this);
-        mEncryptKey.setImageDrawable(iconVoice);
+//        mVoiceKey.setImageDrawable(iconVoice);
+//        mVoiceKey.setOnClickListener(this);
+//        mEncryptKey.setImageDrawable(iconVoice);
         mEncryptKey.setOnClickListener(this);
     }
 
@@ -195,13 +201,20 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mListener = listener;
         mMainKeyboardView = (MainKeyboardView)inputView.findViewById(R.id.keyboard_view);
         mKeyboardEncryptView = (KeyboardEncryptView) inputView.findViewById(R.id.keyboard_encrypt_view);
+        if (mEncryptToolBar != null) {
+            mKeyboardEncryptView.setListener(mEncryptToolBar);
+        }
+    }
+
+    public void setEncryptToolBarListener(final KeyboardEncryptToolBar.Listener listener) {
+        mEncryptToolBar.setListener(listener);
     }
 
     public void updateVisibility(final boolean shouldBeVisible, final boolean isFullscreenMode) {
         final int visibility = shouldBeVisible ? VISIBLE : (isFullscreenMode ? GONE : INVISIBLE);
         setVisibility(visibility);
         final SettingsValues currentSettingsValues = Settings.getInstance().getCurrent();
-        mVoiceKey.setVisibility(currentSettingsValues.mShowsVoiceInputKey ? VISIBLE : INVISIBLE);
+//        mVoiceKey.setVisibility(currentSettingsValues.mShowsVoiceInputKey ? VISIBLE : INVISIBLE);
     }
 
     public void setSuggestions(final SuggestedWords suggestedWords, final boolean isRtlLanguage) {
@@ -458,15 +471,26 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             mListener.showImportantNoticeContents();
             return;
         }
-        if (view == mVoiceKey) {
-            mListener.onCodeInput(Constants.CODE_SHORTCUT,
-                    Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE,
-                    false /* isKeyRepeat */);
-            return;
-        }
+//        if (view == mVoiceKey) {
+//            mListener.onCodeInput(Constants.CODE_SHORTCUT,
+//                    Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE,
+//                    false /* isKeyRepeat */);
+//            return;
+//        }
 
         if (view == mEncryptKey) {
             mKeyboardEncryptView.toggle();
+            mEncryptToolBar.toggle();
+//            if (mSuggestionsStrip.getVisibility() == View.VISIBLE) {
+//                mSuggestionsStrip.setVisibility(View.GONE);
+//            } else {
+//                mSuggestionsStrip.setVisibility(View.VISIBLE);
+//            }
+//            if (mImportantNoticeStrip.getVisibility() == View.VISIBLE) {
+//                mImportantNoticeStrip.setVisibility(View.GONE);
+//            } else {
+//                mImportantNoticeStrip.setVisibility(View.VISIBLE);
+//            }
         }
 
         final Object tag = view.getTag();
