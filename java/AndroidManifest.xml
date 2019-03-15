@@ -52,6 +52,7 @@
                 android:protectionLevel="signature" />
 
     <application android:label="@string/english_ime_name"
+        android:name="com.sujitech.tessercubecore.App"
             android:icon="@drawable/ic_launcher_keyboard"
             android:supportsRtl="true"
             android:allowBackup="true"
