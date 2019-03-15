@@ -38,17 +38,17 @@
          To use this, add the following line into calling application's AndroidManifest.xml
          <pre>
          {@code
-         <uses-permission android:name="com.android.inputmethod.latin.HIDE_SOFT_INPUT"/>
+         <uses-permission android:name="com.sujitech.inputmethod.latin.HIDE_SOFT_INPUT"/>
          }
          </pre>
          then call {@link android.content.Context#sendBroadcast(Intent)} as follows:
          <pre>
          {@code
-         sendBroadcast(new Intent("com.android.inputmethod.latin.HIDE_SOFT_INPUT")
+         sendBroadcast(new Intent("com.sujitech.inputmethod.latin.HIDE_SOFT_INPUT")
                  .setPackage("com.android.inputmethod.latin"));
          }
          </pre> -->
-    <permission android:name="com.android.inputmethod.latin.HIDE_SOFT_INPUT"
+    <permission android:name="com.sujitech.inputmethod.latin.HIDE_SOFT_INPUT"
                 android:protectionLevel="signature" />
 
     <application android:label="@string/english_ime_name"
