@@ -1122,7 +1122,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public InputConnection getCurrentInputConnection() {
-        if (mKeyboardEncryptView != null && mKeyboardEncryptView.getVisibility() == View.VISIBLE) {
+        if (!mKeyboardSwitcher.isShowingEmojiPalettes() && mKeyboardEncryptView != null && mKeyboardEncryptView.getVisibility() == View.VISIBLE) {
             return mKeyboardEncryptView.createInputConnection();
         }
         return super.getCurrentInputConnection();
@@ -1166,7 +1166,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void hideWindow() {
         mKeyboardSwitcher.onHideWindow();
-
+        if (mSuggestionStripView != null) {
+            mSuggestionStripView.onHideWindow();
+        }
         if (TRACE) Debug.stopMethodTracing();
         if (isShowingOptionDialog()) {
             mOptionsDialog.dismiss();
@@ -1235,7 +1237,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final int suggestionsHeight = (!mKeyboardSwitcher.isShowingEmojiPalettes()
                 && mSuggestionStripView.getVisibility() == View.VISIBLE)
                 ? mSuggestionStripView.getHeight() : 0;
-        final int encryptHeight = (mKeyboardEncryptView.getVisibility() == View.VISIBLE) ? mKeyboardEncryptView.getHeight() : 0;
+        final int encryptHeight = (!mKeyboardSwitcher.isShowingEmojiPalettes()
+                && mKeyboardEncryptView.getVisibility() == View.VISIBLE)
+                ? mKeyboardEncryptView.getHeight() : 0;
         final int visibleTopY = inputHeight - visibleKeyboardView.getHeight() - suggestionsHeight - encryptHeight;
         mSuggestionStripView.setMoreSuggestionsHeight(visibleTopY);
         // Need to set expanded touchable region only if a keyboard view is being shown.
@@ -1439,6 +1443,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final Event event = createSoftwareKeypressEvent(getCodePointForKeyboard(codePoint),
                 keyX, keyY, isKeyRepeat);
         onEvent(event);
+    }
+
+    @Override
+    public void onEncryptStateChanged(boolean isOpen) {
+        //TODO: restart input when encrypt view is close
+        if (isOpen) {
+            mInputLogic.finishInput();
+        } else {
+            mInputLogic.finishInput();
+        }
     }
 
     // This method is public for testability of LatinIME, but also in the future it should
