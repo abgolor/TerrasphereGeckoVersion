@@ -63,10 +63,13 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         OnLongClickListener {
 
 
+    private final View mEncryptToolBarContainer;
+
     public interface Listener {
         public void showImportantNoticeContents();
         public void pickSuggestionManually(SuggestedWordInfo word);
         public void onCodeInput(int primaryCode, int x, int y, boolean isKeyRepeat);
+        public void onEncryptStateChanged(boolean isOpen);
     }
 
     static final boolean DBG = DebugFlags.DEBUG_ENABLED;
@@ -151,6 +154,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 //        mVoiceKey = (ImageButton)findViewById(R.id.suggestions_strip_voice_key);
         mEncryptKey = (ImageButton) findViewById(R.id.suggestions_strip_encrypt_key);
         mEncryptToolBar = findViewById(R.id.keyboard_encrypt_toolbar);
+        mEncryptToolBarContainer = findViewById(R.id.keyboard_encrypt_toolbar_container);
         mImportantNoticeStrip = findViewById(R.id.important_notice_strip);
         mStripVisibilityGroup = new StripVisibilityGroup(this, mSuggestionsStrip,
                 mImportantNoticeStrip);
@@ -463,6 +467,12 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         return true;
     }
 
+    public void onHideWindow() {
+        mKeyboardEncryptView.setVisibility(GONE);
+        mEncryptToolBarContainer.setVisibility(GONE);
+        mEncryptToolBar.onClose();
+    }
+
     @Override
     public void onClick(final View view) {
         AudioAndHapticFeedbackManager.getInstance().performHapticAndAudioFeedback(
@@ -480,7 +490,9 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
         if (view == mEncryptKey) {
             mKeyboardEncryptView.toggle();
-            mEncryptToolBar.toggle();
+            mEncryptToolBar.onClose();
+            mEncryptToolBarContainer.setVisibility(mKeyboardEncryptView.getVisibility());
+            mListener.onEncryptStateChanged(mKeyboardEncryptView.getVisibility() == VISIBLE);
 //            if (mSuggestionsStrip.getVisibility() == View.VISIBLE) {
 //                mSuggestionsStrip.setVisibility(View.GONE);
 //            } else {
