@@ -400,14 +400,16 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
         mLanguageOnSpacebarTextSize = keyHeight * mLanguageOnSpacebarTextRatio;
 
-        if (AccessibilityUtils.getInstance().isAccessibilityEnabled()) {
-            if (mAccessibilityDelegate == null) {
-                mAccessibilityDelegate = new MainKeyboardAccessibilityDelegate(this, mKeyDetector);
-            }
-            mAccessibilityDelegate.setKeyboard(keyboard);
-        } else {
-            mAccessibilityDelegate = null;
-        }
+        mAccessibilityDelegate = null;
+//        if (AccessibilityUtils.getInstance().isAccessibilityEnabled()) {
+//            if (mAccessibilityDelegate == null) {
+//                mAccessibilityDelegate = new MainKeyboardAccessibilityDelegate(this, mKeyDetector);
+//            }
+        //TODO: will crash when accessibility enabled
+//            mAccessibilityDelegate.setKeyboard(keyboard);
+//        } else {
+//            mAccessibilityDelegate = null;
+//        }
     }
 
     /**
