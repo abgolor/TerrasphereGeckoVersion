@@ -20,8 +20,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import androidx.core.view.ViewCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -34,11 +32,8 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
-import android.widget.ImageButton;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.keyboard.Keyboard;
@@ -54,10 +49,13 @@ import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.suggestions.MoreSuggestionsView.MoreSuggestionsListener;
 import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
+import com.sujitech.tessercubecore.widget.KeyboardEncryptButton;
 import com.sujitech.tessercubecore.widget.KeyboardEncryptToolBar;
 import com.sujitech.tessercubecore.widget.KeyboardEncryptView;
 
 import java.util.ArrayList;
+
+import androidx.core.view.ViewCompat;
 
 public final class SuggestionStripView extends RelativeLayout implements OnClickListener,
         OnLongClickListener {
@@ -77,7 +75,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
     private final ViewGroup mSuggestionsStrip;
 //    private final ImageButton mVoiceKey;
-    private final ImageButton mEncryptKey;
+    private final KeyboardEncryptButton mEncryptKey;
     private final View mImportantNoticeStrip;
     MainKeyboardView mMainKeyboardView;
     private KeyboardEncryptView mKeyboardEncryptView;
@@ -152,7 +150,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
         mSuggestionsStrip = (ViewGroup)findViewById(R.id.suggestions_strip);
 //        mVoiceKey = (ImageButton)findViewById(R.id.suggestions_strip_voice_key);
-        mEncryptKey = (ImageButton) findViewById(R.id.suggestions_strip_encrypt_key);
+        mEncryptKey = (KeyboardEncryptButton) findViewById(R.id.suggestions_strip_encrypt_key);
         mEncryptToolBar = findViewById(R.id.keyboard_encrypt_toolbar);
         mEncryptToolBarContainer = findViewById(R.id.keyboard_encrypt_toolbar_container);
         mImportantNoticeStrip = findViewById(R.id.important_notice_strip);
@@ -207,6 +205,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mKeyboardEncryptView = (KeyboardEncryptView) inputView.findViewById(R.id.keyboard_encrypt_view);
         if (mEncryptToolBar != null) {
             mKeyboardEncryptView.setListener(mEncryptToolBar);
+            mEncryptToolBar.setToolbarActionsListener(mKeyboardEncryptView);
         }
     }
 
@@ -489,6 +488,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 //        }
 
         if (view == mEncryptKey) {
+            mEncryptKey.hideDot();
             mKeyboardEncryptView.toggle();
             mEncryptToolBar.onClose();
             mEncryptToolBarContainer.setVisibility(mKeyboardEncryptView.getVisibility());
