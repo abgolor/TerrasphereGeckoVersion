@@ -75,8 +75,10 @@
         <!--android:layout_centerVertical="true"-->
         <!--android:contentDescription="@string/spoken_description_mic"-->
         <!--style="?attr/suggestionWordStyle" />-->
-    <ImageButton
-        android:src="@drawable/ic_keyboard_toggle_icon"
+    <com.sujitech.tessercubecore.widget.KeyboardEncryptButton
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?android:attr/selectableItemBackground"
         android:id="@+id/suggestions_strip_encrypt_key"
         android:layout_width="@dimen/config_suggestions_strip_edge_key_width"
         android:layout_height="match_parent"

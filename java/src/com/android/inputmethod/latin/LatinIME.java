@@ -16,10 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import static com.android.inputmethod.latin.common.Constants.ImeOption.FORCE_ASCII;
-import static com.android.inputmethod.latin.common.Constants.ImeOption.NO_MICROPHONE;
-import static com.android.inputmethod.latin.common.Constants.ImeOption.NO_MICROPHONE_COMPAT;
-
 import android.Manifest.permission;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -60,7 +56,6 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.BuildCompatUtils;
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
-import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
 import com.android.inputmethod.compat.ViewOutlineProviderCompatUtils;
 import com.android.inputmethod.compat.ViewOutlineProviderCompatUtils.InsetsUpdater;
 import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
@@ -110,6 +105,10 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
+
+import static com.android.inputmethod.latin.common.Constants.ImeOption.FORCE_ASCII;
+import static com.android.inputmethod.latin.common.Constants.ImeOption.NO_MICROPHONE;
+import static com.android.inputmethod.latin.common.Constants.ImeOption.NO_MICROPHONE_COMPAT;
 
 /**
  * Input method implementation for Qwerty'ish keyboard.
@@ -1123,7 +1122,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public InputConnection getCurrentInputConnection() {
         if (!mKeyboardSwitcher.isShowingEmojiPalettes() && mKeyboardEncryptView != null && mKeyboardEncryptView.getVisibility() == View.VISIBLE) {
-            return mKeyboardEncryptView.createInputConnection();
+            InputConnection encryptIc = mKeyboardEncryptView.createInputConnection();
+            if (encryptIc != null) {
+                return mKeyboardEncryptView.createInputConnection();
+            }
         }
         return super.getCurrentInputConnection();
     }
