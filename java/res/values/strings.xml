@@ -437,7 +437,7 @@ mobile devices. [CHAR LIMIT=25] -->
     <string name="show_setup_wizard_icon_summary">Display application icon in the launcher</string>
 
     <!-- The dictionary provider application name. Visible in Settings/Applications/Manage applications. -->
-    <string name="app_name">Dictionary Provider</string>
+    <string name="app_name">Tessercube</string>
     <!-- The dictionary provider ContentProvider name. Visible in Settings/Applications/Running services. -->
     <string name="dictionary_provider_name">Dictionary Provider</string>
     <!-- The dictionary provider Service name. Visible in Settings/Applications/Running services. -->

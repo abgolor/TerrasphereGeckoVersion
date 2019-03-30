@@ -35,7 +35,6 @@ import android.os.IBinder;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.InputType;
-import android.text.Selection;
 import android.util.Log;
 import android.util.PrintWriterPrinter;
 import android.util.Printer;
@@ -47,7 +46,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.CompletionInfo;
-import android.view.inputmethod.CorrectionInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
@@ -197,17 +195,23 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @NotNull
     @Override
     public String getSelection() {
-        return super.getCurrentInputConnection().getSelectedText(0).toString();
+        CharSequence text = super.getCurrentInputConnection().getSelectedText(0);
+        if (text == null) {
+            return "";
+        } else {
+            return text.toString();
+        }
     }
 
     @Override
     public void overrideSelection(@NotNull String text) {
         InputConnection ic = super.getCurrentInputConnection();
-        CharSequence oldText = ic.getSelectedText(0);
         ExtractedText extractedText = ic.getExtractedText(new ExtractedTextRequest(), 0);
         int startIndex = extractedText.startOffset + extractedText.selectionStart;
-//        int endIndex = extractedText.startOffset +  extractedText.selectionEnd;
-        ic.commitCorrection(new CorrectionInfo(startIndex, oldText, text));
+        int endIndex = extractedText.startOffset +  extractedText.selectionEnd;
+        ic.setComposingRegion(startIndex, endIndex);
+        ic.setComposingText(text, 1);
+        ic.finishComposingText();
     }
 
     final static class HideSoftInputReceiver extends BroadcastReceiver {
