@@ -98,8 +98,6 @@ import com.android.inputmethod.latin.utils.ViewLayoutUtils;
 import com.sujitech.tessercubecore.widget.KeyboardEncryptToolBar;
 import com.sujitech.tessercubecore.widget.KeyboardEncryptView;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -192,7 +190,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         ic.commitText(text, text.length());
     }
 
-    @NotNull
     @Override
     public String getSelection() {
         CharSequence text = super.getCurrentInputConnection().getSelectedText(0);
@@ -204,7 +201,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     @Override
-    public void overrideSelection(@NotNull String text) {
+    public void overrideSelection(String text) {
         InputConnection ic = super.getCurrentInputConnection();
         ExtractedText extractedText = ic.getExtractedText(new ExtractedTextRequest(), 0);
         int startIndex = extractedText.startOffset + extractedText.selectionStart;
