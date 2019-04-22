@@ -16,25 +16,27 @@
 
 package com.android.inputmethod.latin.utils;
 
-import static com.android.inputmethod.latin.common.Constants.Subtype.ExtraValue.COMBINING_RULES;
-import static com.android.inputmethod.latin.common.Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET;
-import static com.android.inputmethod.latin.common.Constants.Subtype.ExtraValue.UNTRANSLATABLE_STRING_IN_SUBTYPE_NAME;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Build;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.common.LocaleUtils;
 import com.android.inputmethod.latin.common.StringUtils;
+import com.sujitech.tessercubecore.common.DataTracking;
 
 import java.util.HashMap;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import static com.android.inputmethod.latin.common.Constants.Subtype.ExtraValue.COMBINING_RULES;
+import static com.android.inputmethod.latin.common.Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET;
+import static com.android.inputmethod.latin.common.Constants.Subtype.ExtraValue.UNTRANSLATABLE_STRING_IN_SUBTYPE_NAME;
 
 /**
  * A helper class to deal with subtype locales.
@@ -222,7 +224,7 @@ public final class SubtypeLocaleUtils {
         }
 
         final String displayName;
-        if (exceptionalNameResId != null) {
+        if (exceptionalNameResId != null && exceptionalNameResId != 0) {
             final RunInLocale<String> getExceptionalName = new RunInLocale<String>() {
                 @Override
                 protected String job(final Resources res) {
@@ -231,6 +233,11 @@ public final class SubtypeLocaleUtils {
             };
             displayName = getExceptionalName.runInLocale(sResources, displayLocale);
         } else {
+            ArrayMap<String, String> data = new ArrayMap<>();
+            data.put("exceptionalNameResId", String.valueOf(exceptionalNameResId));
+            data.put("localeString", localeString);
+            data.put("displayLocale", displayLocale.toString());
+            DataTracking.INSTANCE.track("exceptionalNameResId failed", data);
             displayName = LocaleUtils.constructLocaleFromString(localeString)
                     .getDisplayName(displayLocale);
         }
