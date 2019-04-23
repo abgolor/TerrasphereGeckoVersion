@@ -16,9 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
-import com.android.inputmethod.latin.utils.TargetPackageInfoGetterTask;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -27,6 +24,9 @@ import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.net.Uri;
 import android.util.Log;
+
+import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
+import com.android.inputmethod.latin.utils.TargetPackageInfoGetterTask;
 
 /**
  * Receives broadcasts pertaining to dictionary management and takes the appropriate action.
@@ -134,7 +134,7 @@ public final class DictionaryPackInstallBroadcastReceiver extends BroadcastRecei
             final String wantedClientId =
                     intent.getStringExtra(DictionaryPackConstants.DICTIONARY_PROVIDER_CLIENT_EXTRA);
             final String myClientId = context.getString(R.string.dictionary_pack_client_id);
-            if (!wantedClientId.equals(myClientId)) return; // Not for us
+            if (wantedClientId == null || !wantedClientId.equals(myClientId)) return; // Not for us
             BinaryDictionaryFileDumper.initializeClientRecordHelper(context, myClientId);
         }
     }
