@@ -949,7 +949,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         } else {
             if (hasPinyinIMECandidatesView) {
                 mSuggestionStripView.removeView(mPinyinIMECandidatesView);
-                mSuggestionStripView.mSuggestionsStrip.setVisibility(View.INVISIBLE);
                 hasPinyinIMECandidatesView = false;
             }
             mSuggestionStripView.setChinese(false);

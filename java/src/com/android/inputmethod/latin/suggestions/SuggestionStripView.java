@@ -66,6 +66,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
     public void setChinese(boolean value) {
         mIsChinese = value;
+        mSuggestionsStrip.setVisibility(value ? View.INVISIBLE : View.VISIBLE);
     }
 
     public interface Listener {
