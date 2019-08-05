@@ -74,6 +74,7 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.CoordinateUtils;
 import com.android.inputmethod.latin.common.InputPointers;
+import com.android.inputmethod.latin.common.StringUtils;
 import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.define.ProductionFlags;
 import com.android.inputmethod.latin.inputlogic.InputLogic;
@@ -95,6 +96,7 @@ import com.android.inputmethod.latin.utils.StatsUtils;
 import com.android.inputmethod.latin.utils.StatsUtilsManager;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import com.android.inputmethod.latin.utils.ViewLayoutUtils;
+import com.android.inputmethod.pinyin.PinyinIME;
 import com.sujitech.tessercubecore.widget.KeyboardEncryptToolBar;
 import com.sujitech.tessercubecore.widget.KeyboardEncryptView;
 
@@ -110,6 +112,7 @@ import javax.annotation.Nonnull;
 import static com.android.inputmethod.latin.common.Constants.ImeOption.FORCE_ASCII;
 import static com.android.inputmethod.latin.common.Constants.ImeOption.NO_MICROPHONE;
 import static com.android.inputmethod.latin.common.Constants.ImeOption.NO_MICROPHONE_COMPAT;
+import static com.android.inputmethod.latin.utils.RecapitalizeStatus.CAPS_MODE_ALL_LOWER;
 
 /**
  * Input method implementation for Qwerty'ish keyboard.
@@ -117,7 +120,7 @@ import static com.android.inputmethod.latin.common.Constants.ImeOption.NO_MICROP
 public class LatinIME extends InputMethodService implements KeyboardActionListener,
         SuggestionStripView.Listener, SuggestionStripViewAccessor,
         DictionaryFacilitator.DictionaryInitializationListener,
-        PermissionsManager.PermissionsResultCallback, KeyboardEncryptToolBar.Listener {
+        PermissionsManager.PermissionsResultCallback, KeyboardEncryptToolBar.Listener, PinyinIME.Proxy {
     static final String TAG = LatinIME.class.getSimpleName();
     private static final boolean TRACE = false;
 
@@ -176,6 +179,20 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private final BroadcastReceiver mDictionaryDumpBroadcastReceiver =
             new DictionaryDumpBroadcastReceiver(this);
     private KeyboardEncryptView mKeyboardEncryptView;
+    private PinyinIME mPinyinIME;
+    private View mPinyinIMEInputView;
+    private View mPinyinIMECandidatesView;
+
+    public boolean isCurrentChinese() {
+        final SettingsValues currentSettingsValues = mSettings.getCurrent();
+        RichInputMethodSubtype currentSubType = mRichImm.getCurrentSubtype();
+        return currentSubType.getLocale().toLanguageTag().startsWith("zh") && !currentSettingsValues.mInputAttributes.mIsPasswordField;
+    }
+
+    @Override
+    public Context getIMEContext() {
+        return this;
+    }
 
     @Override
     public @Nonnull String requireAllText() {
@@ -628,6 +645,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onCreate() {
+        mPinyinIME = new PinyinIME();
+        mPinyinIME.setProxy(this);
+        mPinyinIME.onCreate();
         Settings.init(this);
         DebugFlags.init(PreferenceManager.getDefaultSharedPreferences(this));
         RichInputMethodManager.init(this);
@@ -772,6 +792,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onDestroy() {
+        mPinyinIME.onDestroy();
         mDictionaryFacilitator.closeDictionaries();
         mSettings.onDestroy();
         unregisterReceiver(mHideSoftInputReceiver);
@@ -798,6 +819,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onConfigurationChanged(final Configuration conf) {
+        if (isCurrentChinese()) {
+            mPinyinIME.onConfigurationChanged(conf);
+        }
+
         SettingsValues settingsValues = mSettings.getCurrent();
         if (settingsValues.mDisplayOrientation != conf.orientation) {
             mHandler.startOrientationChanging();
@@ -824,8 +849,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public View onCreateInputView() {
+        mPinyinIMEInputView = mPinyinIME.onCreateInputView();
+        mPinyinIMECandidatesView = mPinyinIME.onCreateCandidatesView();
         StatsUtils.onCreateInputView();
         return mKeyboardSwitcher.onCreateInputView(mIsHardwareAcceleratedDrawingEnabled);
+    }
+
+    @Override
+    public View onCreateCandidatesView() {
+        return super.onCreateCandidatesView();
     }
 
     @Override
@@ -840,6 +872,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mSuggestionStripView.setListener(this, view);
             mSuggestionStripView.setEncryptToolBarListener(this);
         }
+        switchPinyinIMEMode();
 //        if (mKeyboardEncryptView != null) {
 //            mKeyboardEncryptView.setListener(this);
 //        }
@@ -852,17 +885,29 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onStartInput(final EditorInfo editorInfo, final boolean restarting) {
-        mHandler.onStartInput(editorInfo, restarting);
+        if (isCurrentChinese()) {
+            mPinyinIME.onStartInput(editorInfo, restarting);
+        } else {
+            mHandler.onStartInput(editorInfo, restarting);
+        }
     }
 
     @Override
     public void onStartInputView(final EditorInfo editorInfo, final boolean restarting) {
+        if (isCurrentChinese()) {
+            mPinyinIME.onStartInputView(editorInfo, restarting);
+        }
         mHandler.onStartInputView(editorInfo, restarting);
         mStatsUtilsManager.onStartInputView();
+        switchPinyinIMEMode();
     }
 
     @Override
     public void onFinishInputView(final boolean finishingInput) {
+        if (isCurrentChinese()) {
+            mPinyinIME.onFinishInputView(finishingInput);
+        } else {
+        }
         StatsUtils.onFinishInputView();
         mHandler.onFinishInputView(finishingInput);
         mStatsUtilsManager.onFinishInputView();
@@ -871,7 +916,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onFinishInput() {
-        mHandler.onFinishInput();
+        if (isCurrentChinese()) {
+            mPinyinIME.onFinishInput();
+        } else {
+            mHandler.onFinishInput();
+        }
     }
 
     @Override
@@ -884,6 +933,28 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mInputLogic.onSubtypeChanged(SubtypeLocaleUtils.getCombiningRulesExtraValue(subtype),
                 mSettings.getCurrent());
         loadKeyboard();
+        switchPinyinIMEMode();
+    }
+
+    private boolean hasPinyinIMECandidatesView = false;
+    private void switchPinyinIMEMode() {
+        if (isCurrentChinese()) {
+            if (!hasPinyinIMECandidatesView) {
+                hasPinyinIMECandidatesView = true;
+                mSuggestionStripView.setPinyinIMECandidatesView(mPinyinIMECandidatesView);
+            }
+            mSuggestionStripView.setChinese(true);
+            mKeyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState(),
+                    CAPS_MODE_ALL_LOWER);
+        } else {
+            if (hasPinyinIMECandidatesView) {
+                mSuggestionStripView.removeView(mPinyinIMECandidatesView);
+                mSuggestionStripView.mSuggestionsStrip.setVisibility(View.INVISIBLE);
+                hasPinyinIMECandidatesView = false;
+            }
+            mSuggestionStripView.setChinese(false);
+            mPinyinIME.onFinishInput();
+        }
     }
 
     void onStartInputInternal(final EditorInfo editorInfo, final boolean restarting) {
@@ -1211,6 +1282,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 }
             }
         }
+        if (isCurrentChinese()) {
+            mPinyinIME.onDisplayCompletions(applicationSpecifiedCompletions);
+            return;
+        }
         if (!mSettings.getCurrent().isApplicationSpecifiedCompletionsOn()) {
             return;
         }
@@ -1367,6 +1442,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     int getCurrentRecapitalizeState() {
+        if (isCurrentChinese()) {
+            return CAPS_MODE_ALL_LOWER;
+        }
         return mInputLogic.getCurrentRecapitalizeState();
     }
 
@@ -1485,11 +1563,38 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (Constants.CODE_SHORTCUT == event.mKeyCode) {
             mRichImm.switchToShortcutIme(this);
         }
-        final InputTransaction completeInputTransaction =
-                mInputLogic.onCodeInput(mSettings.getCurrent(), event,
-                        mKeyboardSwitcher.getKeyboardShiftMode(),
-                        mKeyboardSwitcher.getCurrentKeyboardScriptId(), mHandler);
-        updateStateAfterInputTransaction(completeInputTransaction);
+        final String text = StringUtils.newSingleCodePointString(event.mCodePoint);
+        if (isCurrentChinese() && text.matches("[A-Za-z]*")) {
+            try {
+                int keyCode = (int) KeyEvent.class.getField("KEYCODE_" + text.toUpperCase()).get(null);
+                mPinyinIME.onKeyUp(keyCode, new KeyEvent(System.currentTimeMillis(), System.currentTimeMillis(), KeyEvent.ACTION_UP, keyCode, 0, 0));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (isCurrentChinese() && event.mKeyCode == Constants.CODE_DELETE && mPinyinIME.getState() != PinyinIME.ImeState.STATE_IDLE) {
+            mPinyinIME.onKeyDown(KeyEvent.KEYCODE_DEL, new KeyEvent(System.currentTimeMillis(), System.currentTimeMillis(), KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL, 0, 0));
+            mPinyinIME.onKeyUp(KeyEvent.KEYCODE_DEL, new KeyEvent(System.currentTimeMillis(), System.currentTimeMillis(), KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL, 0, 0));
+        } else if (isCurrentChinese() && (event.mCodePoint == Constants.CODE_ENTER || event.mCodePoint == Constants.CODE_SPACE) && mPinyinIME.getState() == PinyinIME.ImeState.STATE_INPUT) {
+            int key = KeyEvent.KEYCODE_UNKNOWN;
+            switch (event.mCodePoint) {
+                case Constants.CODE_ENTER:
+                    key = KeyEvent.KEYCODE_ENTER;
+                    break;
+                case Constants.CODE_SPACE:
+                    key = KeyEvent.KEYCODE_SPACE;
+                    break;
+            }
+            mPinyinIME.onKeyDown(key, new KeyEvent(System.currentTimeMillis(), System.currentTimeMillis(), KeyEvent.ACTION_DOWN, key, 0, 0));
+            mPinyinIME.onKeyUp(key, new KeyEvent(System.currentTimeMillis(), System.currentTimeMillis(), KeyEvent.ACTION_UP, key, 0, 0));
+        } else if (isCurrentChinese() && mPinyinIME.getState() == PinyinIME.ImeState.STATE_INPUT) {
+            //Ignore input
+        } else {
+            final InputTransaction completeInputTransaction =
+                    mInputLogic.onCodeInput(mSettings.getCurrent(), event,
+                            mKeyboardSwitcher.getKeyboardShiftMode(),
+                            mKeyboardSwitcher.getCurrentKeyboardScriptId(), mHandler);
+            updateStateAfterInputTransaction(completeInputTransaction);
+        }
         mKeyboardSwitcher.onEvent(event, getCurrentAutoCapsState(), getCurrentRecapitalizeState());
     }
 
@@ -1610,9 +1715,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 || shouldShowSuggestionCandidates
                 || currentSettingsValues.isApplicationSpecifiedCompletionsOn();
         final boolean shouldShowSuggestionsStrip = shouldShowSuggestionsStripUnlessPassword
-                && !currentSettingsValues.mInputAttributes.mIsPasswordField;
+                && !currentSettingsValues.mInputAttributes.mIsPasswordField || isCurrentChinese();
         mSuggestionStripView.updateVisibility(shouldShowSuggestionsStrip, isFullscreenMode());
         if (!shouldShowSuggestionsStrip) {
+            if (isCurrentChinese()) {
+                mPinyinIME.onFinishCandidatesView(true);
+            }
             return;
         }
 
@@ -1770,6 +1878,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onPressKey(final int primaryCode, final int repeatCount,
                            final boolean isSinglePointer) {
+        if (BuildConfig.DEBUG) {
+            Log.i(TAG, "onPressKey: " + String.valueOf(primaryCode) + " " + String.valueOf(repeatCount) + " " + String.valueOf(isSinglePointer));
+        }
         mKeyboardSwitcher.onPressKey(primaryCode, isSinglePointer, getCurrentAutoCapsState(),
                 getCurrentRecapitalizeState());
         hapticAndAudioFeedback(primaryCode, repeatCount);
@@ -1779,6 +1890,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // press matching call is {@link #onPressKey(int,int,boolean)} above.
     @Override
     public void onReleaseKey(final int primaryCode, final boolean withSliding) {
+        if (BuildConfig.DEBUG) {
+            Log.i(TAG, "onReleaseKey: " + String.valueOf(primaryCode) + " " + String.valueOf(withSliding));
+        }
         mKeyboardSwitcher.onReleaseKey(primaryCode, withSliding, getCurrentAutoCapsState(),
                 getCurrentRecapitalizeState());
     }
@@ -1795,6 +1909,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Hooks for hardware keyboard
     @Override
     public boolean onKeyDown(final int keyCode, final KeyEvent keyEvent) {
+        if (isCurrentChinese()) {
+            return mPinyinIME.onKeyDown(keyCode, keyEvent);
+        }
+
         if (mEmojiAltPhysicalKeyDetector == null) {
             mEmojiAltPhysicalKeyDetector = new EmojiAltPhysicalKeyDetector(
                     getApplicationContext().getResources());
@@ -1820,6 +1938,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public boolean onKeyUp(final int keyCode, final KeyEvent keyEvent) {
+        if (isCurrentChinese()) {
+            return mPinyinIME.onKeyUp(keyCode, keyEvent);
+        }
         if (mEmojiAltPhysicalKeyDetector == null) {
             mEmojiAltPhysicalKeyDetector = new EmojiAltPhysicalKeyDetector(
                     getApplicationContext().getResources());
@@ -1833,6 +1954,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return true;
         }
         return super.onKeyUp(keyCode, keyEvent);
+    }
+
+    @Override
+    public void requestHideSelf(int flags) {
+        if (isCurrentChinese()) {
+            mPinyinIME.requestHideSelf(flags);
+        }
+        super.requestHideSelf(flags);
     }
 
     // onKeyDown and onKeyUp are the main events we are interested in. There are two more events

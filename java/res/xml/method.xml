@@ -126,6 +126,15 @@
             android:isAsciiCapable="true"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="Chinese"
+            android:subtypeId="0xb045e711"
+            android:imeSubtypeLocale="zh_CN"
+            android:languageTag="zh-CN"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="SupportTouchPositionCorrection,EmojiCapable"
+            android:isAsciiCapable="false"
+    />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_en_GB"
             android:subtypeId="0xb045e755"
             android:imeSubtypeLocale="en_GB"

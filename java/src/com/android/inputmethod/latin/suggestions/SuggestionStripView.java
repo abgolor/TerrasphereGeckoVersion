@@ -62,6 +62,11 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
 
     private final View mEncryptToolBarContainer;
+    private boolean mIsChinese;
+
+    public void setChinese(boolean value) {
+        mIsChinese = value;
+    }
 
     public interface Listener {
         public void showImportantNoticeContents();
@@ -118,7 +123,11 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         }
 
         public void showSuggestionsStrip() {
-            mSuggestionsStrip.setVisibility(VISIBLE);
+            if (!((SuggestionStripView) mSuggestionStripView).mIsChinese) {
+                mSuggestionsStrip.setVisibility(VISIBLE);
+            } else {
+                mSuggestionsStrip.setVisibility(INVISIBLE);
+            }
             mImportantNoticeStrip.setVisibility(INVISIBLE);
         }
 
@@ -207,6 +216,16 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             mKeyboardEncryptView.setListener(mEncryptToolBar);
             mEncryptToolBar.setToolbarActionsListener(mKeyboardEncryptView);
         }
+    }
+
+    public void setPinyinIMECandidatesView(View pinyinIMECandidatesView) {
+        LayoutParams param = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        param.addRule(RelativeLayout.ALIGN_PARENT_START);
+        param.addRule(RelativeLayout.ALIGN_PARENT_END);
+        param.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        param.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        pinyinIMECandidatesView.setPaddingRelative(0,0,getResources().getDimensionPixelSize(R.dimen.config_suggestions_strip_horizontal_margin),0);
+        addView(pinyinIMECandidatesView, getChildCount() - 1, param);
     }
 
     public void setEncryptToolBarListener(final KeyboardEncryptToolBar.Listener listener) {
