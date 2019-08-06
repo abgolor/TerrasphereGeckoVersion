@@ -60,6 +60,19 @@
     <Key
         latin:keySpec="+"
         latin:moreKeys="!text/morekeys_plus" />
-    <include
-        latin:keyboardLayout="@xml/keys_parentheses" />
+    <switch>
+        <case
+            latin:languageCode="zh">
+            <Key
+                latin:keySpec="&#xFF08;"
+                latin:moreKeys="!text/morekeys_left_parenthesis,!text/keyspec_left_parenthesis" />
+            <Key
+                latin:keySpec="&#xFF09;"
+                latin:moreKeys="!text/morekeys_right_parenthesis,!text/keyspec_right_parenthesis" />
+        </case>
+        <default>
+            <include
+                latin:keyboardLayout="@xml/keys_parentheses" />
+        </default>
+    </switch>
 </merge>

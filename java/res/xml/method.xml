@@ -128,10 +128,10 @@
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="Chinese"
             android:subtypeId="0xb045e711"
-            android:imeSubtypeLocale="zh_CN"
-            android:languageTag="zh-CN"
+            android:imeSubtypeLocale="zh"
+            android:languageTag="zh-Hans"
             android:imeSubtypeMode="keyboard"
-            android:imeSubtypeExtraValue="SupportTouchPositionCorrection,EmojiCapable"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=chinese_pinyin,EmojiCapable"
             android:isAsciiCapable="false"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"

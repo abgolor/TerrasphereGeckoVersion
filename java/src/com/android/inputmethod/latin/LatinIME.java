@@ -1556,24 +1556,28 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    // This method is public for testability of LatinIME, but also in the future it should
-    // completely replace #onCodeInput.
-    public void onEvent(@Nonnull final Event event) {
-        if (Constants.CODE_SHORTCUT == event.mKeyCode) {
-            mRichImm.switchToShortcutIme(this);
+
+    private boolean onPinyinEvent(@Nonnull final Event event) {
+        if (!isCurrentChinese()) {
+            return false;
         }
         final String text = StringUtils.newSingleCodePointString(event.mCodePoint);
-        if (isCurrentChinese() && text.matches("[A-Za-z]*")) {
+        if (text.matches("[A-Za-z]*")) {
             try {
                 int keyCode = (int) KeyEvent.class.getField("KEYCODE_" + text.toUpperCase()).get(null);
                 mPinyinIME.onKeyUp(keyCode, new KeyEvent(System.currentTimeMillis(), System.currentTimeMillis(), KeyEvent.ACTION_UP, keyCode, 0, 0));
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        } else if (isCurrentChinese() && event.mKeyCode == Constants.CODE_DELETE && mPinyinIME.getState() != PinyinIME.ImeState.STATE_IDLE) {
+            return true;
+        }
+
+        if (event.mKeyCode == Constants.CODE_DELETE && mPinyinIME.getState() != PinyinIME.ImeState.STATE_IDLE) {
             mPinyinIME.onKeyDown(KeyEvent.KEYCODE_DEL, new KeyEvent(System.currentTimeMillis(), System.currentTimeMillis(), KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL, 0, 0));
             mPinyinIME.onKeyUp(KeyEvent.KEYCODE_DEL, new KeyEvent(System.currentTimeMillis(), System.currentTimeMillis(), KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL, 0, 0));
-        } else if (isCurrentChinese() && (event.mCodePoint == Constants.CODE_ENTER || event.mCodePoint == Constants.CODE_SPACE) && mPinyinIME.getState() == PinyinIME.ImeState.STATE_INPUT) {
+            return true;
+        }
+        if ((event.mCodePoint == Constants.CODE_ENTER || event.mCodePoint == Constants.CODE_SPACE) && mPinyinIME.getState() == PinyinIME.ImeState.STATE_INPUT) {
             int key = KeyEvent.KEYCODE_UNKNOWN;
             switch (event.mCodePoint) {
                 case Constants.CODE_ENTER:
@@ -1585,9 +1589,27 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
             mPinyinIME.onKeyDown(key, new KeyEvent(System.currentTimeMillis(), System.currentTimeMillis(), KeyEvent.ACTION_DOWN, key, 0, 0));
             mPinyinIME.onKeyUp(key, new KeyEvent(System.currentTimeMillis(), System.currentTimeMillis(), KeyEvent.ACTION_UP, key, 0, 0));
-        } else if (isCurrentChinese() && mPinyinIME.getState() == PinyinIME.ImeState.STATE_INPUT) {
+            return true;
+        }
+        if (event.mKeyCode == Constants.CODE_PINYIN_CAND) {
+            mPinyinIME.onKeyDown(KeyEvent.KEYCODE_APOSTROPHE, new KeyEvent(System.currentTimeMillis(), System.currentTimeMillis(), KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_APOSTROPHE, 0, 0));
+            mPinyinIME.onKeyUp(KeyEvent.KEYCODE_APOSTROPHE, new KeyEvent(System.currentTimeMillis(), System.currentTimeMillis(), KeyEvent.ACTION_UP, KeyEvent.KEYCODE_APOSTROPHE, 0, 0));
+            return true;
+        }
+        if (mPinyinIME.getState() == PinyinIME.ImeState.STATE_INPUT) {
             //Ignore input
-        } else {
+            return true;
+        }
+        return false;
+    }
+
+    // This method is public for testability of LatinIME, but also in the future it should
+    // completely replace #onCodeInput.
+    public void onEvent(@Nonnull final Event event) {
+        if (Constants.CODE_SHORTCUT == event.mKeyCode) {
+            mRichImm.switchToShortcutIme(this);
+        }
+        if (!onPinyinEvent(event)) {
             final InputTransaction completeInputTransaction =
                     mInputLogic.onCodeInput(mSettings.getCurrent(), event,
                             mKeyboardSwitcher.getKeyboardShiftMode(),

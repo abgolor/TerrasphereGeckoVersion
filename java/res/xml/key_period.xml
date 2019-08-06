@@ -24,11 +24,19 @@
     <switch>
         <case
             latin:keyboardLayoutSet="dvorak"
-        >
+            >
             <Key
                 latin:keySpec="z"
                 latin:keyLabelFlags="hasPopupHint"
                 latin:moreKeys="!text/morekeys_punctuation,!text/morekeys_z" />
+        </case>
+        <case
+            latin:keyboardLayoutSet="chinese_pinyin"
+            >
+            <Key
+                latin:keySpec="&#x3002;"
+                latin:keyLabelFlags="hasPopupHint"
+                latin:moreKeys="!text/keyspec_period,!text/morekeys_punctuation,!text/morekeys_period"  />
         </case>
         <default>
             <Key

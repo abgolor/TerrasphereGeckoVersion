@@ -35,6 +35,15 @@
                 latin:keySpec="!text/keyspec_right_double_angle_quote"
                 latin:moreKeys="!text/morekeys_single_quote" />
         </case>
+        <case
+            latin:languageCode="zh">
+            <Key
+                latin:keySpec="&#xFF02;"
+                latin:moreKeys="!text/morekeys_double_quote" />
+            <Key
+                latin:keySpec="&#xFF07;"
+                latin:moreKeys="!text/morekeys_single_quote" />
+        </case>
         <default>
             <Key
                 latin:keySpec="&quot;"
@@ -44,15 +53,33 @@
                 latin:moreKeys="!text/morekeys_single_quote" />
         </default>
     </switch>
-    <Key
-        latin:keySpec=":" />
-    <Key
-        latin:keySpec="!text/keyspec_symbols_semicolon"
-        latin:moreKeys="!text/morekeys_symbols_semicolon" />
-    <Key
-        latin:keySpec="!"
-        latin:moreKeys="!text/morekeys_exclamation" />
-    <Key
-        latin:keySpec="!text/keyspec_symbols_question"
-        latin:moreKeys="!text/morekeys_question" />
+    <switch>
+        <case
+            latin:languageCode="zh">
+            <Key
+                latin:keySpec="&#xFF1A;" />
+            <Key
+                latin:keySpec="&#xFF1B;"
+                latin:moreKeys="!text/morekeys_symbols_semicolon" />
+            <Key
+                latin:keySpec="&#xFF01;"
+                latin:moreKeys="!text/morekeys_exclamation" />
+            <Key
+                latin:keySpec="&#xFF1F;"
+                latin:moreKeys="!text/morekeys_question" />
+        </case>
+        <default>
+            <Key
+                latin:keySpec=":" />
+            <Key
+                latin:keySpec="!text/keyspec_symbols_semicolon"
+                latin:moreKeys="!text/morekeys_symbols_semicolon" />
+            <Key
+                latin:keySpec="!"
+                latin:moreKeys="!text/morekeys_exclamation" />
+            <Key
+                latin:keySpec="!text/keyspec_symbols_question"
+                latin:moreKeys="!text/morekeys_question" />
+        </default>
+    </switch>
 </merge>

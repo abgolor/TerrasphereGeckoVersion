@@ -81,6 +81,8 @@
     <string-array name="locale_and_extra_value_to_keyboard_layout_set_map">
         <item>en_US:TrySuppressingImeSwitcher,AsciiCapable,SupportTouchPositionCorrection,EmojiCapable</item>
         <item>qwerty</item>
+        <item>zh:EmojiCapable</item>
+        <item>chinese_pinyin</item>
         <item>en_GB:TrySuppressingImeSwitcher,AsciiCapable,SupportTouchPositionCorrection,EmojiCapable</item>
         <item>qwerty</item>
         <item>ar:SupportTouchPositionCorrection,EmojiCapable</item>

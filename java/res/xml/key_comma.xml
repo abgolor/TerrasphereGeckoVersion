@@ -24,11 +24,20 @@
     <switch>
         <case
             latin:keyboardLayoutSet="dvorak"
-        >
+            >
             <Key
                 latin:keySpec="q"
                 latin:moreKeys="!text/morekeys_q,%"
                 latin:backgroundType="normal"
+                latin:keyStyle="settingsMoreKeysStyle" />
+        </case>
+        <case
+            latin:keyboardLayoutSet="chinese_pinyin"
+            >
+            <Key
+                latin:keySpec="&#xFF0C;"
+                latin:keyLabelFlags="hasPopupHint"
+                latin:moreKeys="!text/keyspec_comma"
                 latin:keyStyle="settingsMoreKeysStyle" />
         </case>
         <case

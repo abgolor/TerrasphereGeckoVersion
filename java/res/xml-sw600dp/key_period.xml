@@ -31,6 +31,14 @@
                 latin:keySpec="\?"
                 latin:moreKeys="!text/morekeys_tablet_period,!text/morekeys_question" />
         </case>
+        <case
+            latin:keyboardLayoutSet="chinese_pinyin"
+            >
+            <Key
+                latin:keySpec="&#x3002;"
+                latin:keyLabelFlags="hasPopupHint"
+                latin:moreKeys="!text/keyspec_tablet_period,!text/morekeys_tablet_period,!text/morekeys_question" />
+        </case>
         <default>
             <Key
                 latin:keySpec="!text/keyspec_tablet_period"

@@ -44,6 +44,15 @@
                 latin:moreKeys="!text/morekeys_exclamation,%"
                 latin:keyStyle="settingsMoreKeysStyle" />
         </case>
+        <case
+            latin:keyboardLayoutSet="chinese_pinyin"
+            >
+            <Key
+                latin:keySpec="&#xFF0C;"
+                latin:keyLabelFlags="hasPopupHint"
+                latin:moreKeys="!text/keyspec_comma"
+                latin:keyStyle="settingsMoreKeysStyle" />
+        </case>
         <default>
             <Key
                 latin:keySpec="!text/keyspec_tablet_comma"
