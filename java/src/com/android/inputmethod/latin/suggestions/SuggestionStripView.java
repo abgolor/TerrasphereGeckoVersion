@@ -226,7 +226,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         param.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         param.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         pinyinIMECandidatesView.setPaddingRelative(0,0,getResources().getDimensionPixelSize(R.dimen.config_suggestions_strip_horizontal_margin),0);
-        addView(pinyinIMECandidatesView, getChildCount() - 1, param);
+        addView(pinyinIMECandidatesView, getChildCount() - 2, param);
     }
 
     public void setEncryptToolBarListener(final KeyboardEncryptToolBar.Listener listener) {

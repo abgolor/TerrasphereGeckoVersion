@@ -35,6 +35,20 @@
          We just need to ignore the system's audio and haptic feedback settings. -->
     <!-- Provide audio and haptic feedback by ourselves based on the keyboard settings.
          We just need to ignore the system's audio and haptic feedback settings. -->
+    <FrameLayout
+        style="?attr/suggestionStripViewStyle"
+        android:id="@+id/keyboard_encrypt_toolbar_container"
+        android:visibility="gone"
+        android:layout_marginTop="-4dp"
+        android:paddingTop="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/config_suggestions_strip_horizontal_margin">
+        <com.sujitech.tessercubecore.widget.KeyboardEncryptToolBar
+            android:id="@+id/keyboard_encrypt_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </FrameLayout>
     <LinearLayout
         android:id="@+id/important_notice_strip"
         android:orientation="horizontal"
@@ -52,20 +66,6 @@
             android:textSize="16sp"
             style="?attr/suggestionWordStyle" />
     </LinearLayout>
-    <FrameLayout
-        style="?attr/suggestionStripViewStyle"
-        android:id="@+id/keyboard_encrypt_toolbar_container"
-        android:visibility="gone"
-        android:layout_marginTop="-4dp"
-        android:paddingTop="4dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginEnd="@dimen/config_suggestions_strip_horizontal_margin">
-        <com.sujitech.tessercubecore.widget.KeyboardEncryptToolBar
-            android:id="@+id/keyboard_encrypt_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </FrameLayout>
     <!--<ImageButton-->
         <!--android:id="@+id/suggestions_strip_voice_key"-->
         <!--android:layout_width="@dimen/config_suggestions_strip_edge_key_width"-->
