@@ -61,7 +61,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         OnLongClickListener {
 
 
-    private final View mEncryptToolBarContainer;
     private boolean mIsChinese;
 
     public void setChinese(boolean value) {
@@ -85,7 +84,8 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     private final View mImportantNoticeStrip;
     MainKeyboardView mMainKeyboardView;
     private KeyboardEncryptView mKeyboardEncryptView;
-    private final KeyboardEncryptToolBar mEncryptToolBar;
+//    private final View mEncryptToolBarContainer;
+    private KeyboardEncryptToolBar mEncryptToolBar;
 
     private final View mMoreSuggestionsContainer;
     private final MoreSuggestionsView mMoreSuggestionsView;
@@ -161,8 +161,8 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mSuggestionsStrip = (ViewGroup)findViewById(R.id.suggestions_strip);
 //        mVoiceKey = (ImageButton)findViewById(R.id.suggestions_strip_voice_key);
         mEncryptKey = (KeyboardEncryptButton) findViewById(R.id.suggestions_strip_encrypt_key);
-        mEncryptToolBar = findViewById(R.id.keyboard_encrypt_toolbar);
-        mEncryptToolBarContainer = findViewById(R.id.keyboard_encrypt_toolbar_container);
+//        mEncryptToolBar = findViewById(R.id.keyboard_encrypt_toolbar);
+//        mEncryptToolBarContainer = findViewById(R.id.keyboard_encrypt_toolbar_container);
         mImportantNoticeStrip = findViewById(R.id.important_notice_strip);
         mStripVisibilityGroup = new StripVisibilityGroup(this, mSuggestionsStrip,
                 mImportantNoticeStrip);
@@ -213,6 +213,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mListener = listener;
         mMainKeyboardView = (MainKeyboardView)inputView.findViewById(R.id.keyboard_view);
         mKeyboardEncryptView = (KeyboardEncryptView) inputView.findViewById(R.id.keyboard_encrypt_view);
+        mEncryptToolBar = mKeyboardEncryptView.findViewById(R.id.keyboard_encrypt_toolbar);
         if (mEncryptToolBar != null) {
             mKeyboardEncryptView.setListener(mEncryptToolBar);
             mEncryptToolBar.setToolbarActionsListener(mKeyboardEncryptView);
@@ -226,7 +227,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         param.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         param.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         pinyinIMECandidatesView.setPaddingRelative(0,0,getResources().getDimensionPixelSize(R.dimen.config_suggestions_strip_horizontal_margin),0);
-        addView(pinyinIMECandidatesView, getChildCount() - 2, param);
+        addView(pinyinIMECandidatesView, Math.max(getChildCount() - 2, 0), param);
     }
 
     public void setEncryptToolBarListener(final KeyboardEncryptToolBar.Listener listener) {
@@ -489,7 +490,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
     public void onHideWindow() {
         mKeyboardEncryptView.setVisibility(GONE);
-        mEncryptToolBarContainer.setVisibility(GONE);
+//        mEncryptToolBarContainer.setVisibility(GONE);
         mEncryptToolBar.onClose();
     }
 
@@ -512,7 +513,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             mEncryptKey.hideDot();
             mKeyboardEncryptView.toggle();
             mEncryptToolBar.onClose();
-            mEncryptToolBarContainer.setVisibility(mKeyboardEncryptView.getVisibility());
+//            mEncryptToolBarContainer.setVisibility(mKeyboardEncryptView.getVisibility());
             mListener.onEncryptStateChanged(mKeyboardEncryptView.getVisibility() == VISIBLE);
 //            if (mSuggestionsStrip.getVisibility() == View.VISIBLE) {
 //                mSuggestionsStrip.setVisibility(View.GONE);
