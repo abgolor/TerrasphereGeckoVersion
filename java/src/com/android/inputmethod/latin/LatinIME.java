@@ -1339,6 +1339,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 && mKeyboardExtendView.getVisibility() == View.VISIBLE)
                 ? mKeyboardExtendView.getHeight() : 0;
         int visibleKeyboardHeight = visibleKeyboardView.getHeight();
+        if (visibleKeyboardView.getVisibility() == View.GONE) {
+            visibleKeyboardHeight = 0;
+        }
+        final int visibleTopY = inputHeight - visibleKeyboardHeight - suggestionsHeight - encryptHeight;
         mSuggestionStripView.setMoreSuggestionsHeight(visibleTopY);
         // Need to set expanded touchable region only if a keyboard view is being shown.
         if (visibleKeyboardView.isShown()) {
