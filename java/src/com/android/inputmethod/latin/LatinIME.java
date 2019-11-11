@@ -97,8 +97,8 @@ import com.android.inputmethod.latin.utils.StatsUtilsManager;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import com.android.inputmethod.latin.utils.ViewLayoutUtils;
 import com.android.inputmethod.pinyin.PinyinIME;
-import com.sujitech.tessercubecore.widget.KeyboardEncryptToolBar;
-import com.sujitech.tessercubecore.widget.KeyboardEncryptView;
+import com.sujitech.tessercubecore.keyboard.KeyboardEncryptToolBar;
+import com.sujitech.tessercubecore.keyboard.KeyboardExtendView;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -178,7 +178,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private final BroadcastReceiver mDictionaryDumpBroadcastReceiver =
             new DictionaryDumpBroadcastReceiver(this);
-    private KeyboardEncryptView mKeyboardEncryptView;
+    private KeyboardExtendView mKeyboardExtendView;
     private PinyinIME mPinyinIME;
     private View mPinyinIMEInputView;
     private View mPinyinIMECandidatesView;
@@ -867,14 +867,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mInsetsUpdater = ViewOutlineProviderCompatUtils.setInsetsOutlineProvider(view);
         updateSoftInputWindowLayoutParameters();
         mSuggestionStripView = (SuggestionStripView)view.findViewById(R.id.suggestion_strip_view);
-        mKeyboardEncryptView = (KeyboardEncryptView) view.findViewById(R.id.keyboard_encrypt_view);
+        mKeyboardExtendView = (KeyboardExtendView) view.findViewById(R.id.keyboard_encrypt_view);
         if (hasSuggestionStripView()) {
             mSuggestionStripView.setListener(this, view);
             mSuggestionStripView.setEncryptToolBarListener(this);
         }
         switchPinyinIMEMode();
-//        if (mKeyboardEncryptView != null) {
-//            mKeyboardEncryptView.setListener(this);
+//        if (mKeyboardExtendView != null) {
+//            mKeyboardExtendView.setListener(this);
 //        }
     }
 
@@ -1213,8 +1213,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public InputConnection getCurrentInputConnection() {
-        if (!mKeyboardSwitcher.isShowingEmojiPalettes() && mKeyboardEncryptView != null && mKeyboardEncryptView.getVisibility() == View.VISIBLE) {
-            InputConnection encryptIc = mKeyboardEncryptView.createInputConnection();
+        if (!mKeyboardSwitcher.isShowingEmojiPalettes() && mKeyboardExtendView != null && mKeyboardExtendView.getVisibility() == View.VISIBLE) {
+            InputConnection encryptIc = mKeyboardExtendView.createInputConnection();
             if (encryptIc != null) {
                 return encryptIc;
             }
@@ -1336,9 +1336,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 && mSuggestionStripView.getVisibility() == View.VISIBLE)
                 ? mSuggestionStripView.getHeight() : 0;
         final int encryptHeight = (!mKeyboardSwitcher.isShowingEmojiPalettes()
-                && mKeyboardEncryptView.getVisibility() == View.VISIBLE)
-                ? mKeyboardEncryptView.getHeight() : 0;
-        final int visibleTopY = inputHeight - visibleKeyboardView.getHeight() - suggestionsHeight - encryptHeight;
+                && mKeyboardExtendView.getVisibility() == View.VISIBLE)
+                ? mKeyboardExtendView.getHeight() : 0;
+        int visibleKeyboardHeight = visibleKeyboardView.getHeight();
         mSuggestionStripView.setMoreSuggestionsHeight(visibleTopY);
         // Need to set expanded touchable region only if a keyboard view is being shown.
         if (visibleKeyboardView.isShown()) {

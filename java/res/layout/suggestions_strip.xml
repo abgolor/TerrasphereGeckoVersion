@@ -61,7 +61,7 @@
         <!--android:layout_centerVertical="true"-->
         <!--android:contentDescription="@string/spoken_description_mic"-->
         <!--style="?attr/suggestionWordStyle" />-->
-    <com.sujitech.tessercubecore.widget.KeyboardEncryptButton
+    <com.sujitech.tessercubecore.keyboard.KeyboardEncryptButton
         android:clickable="true"
         android:focusable="true"
         android:background="?android:attr/selectableItemBackground"
