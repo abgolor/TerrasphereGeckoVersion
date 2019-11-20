@@ -1581,7 +1581,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mPinyinIME.onKeyUp(KeyEvent.KEYCODE_DEL, new KeyEvent(System.currentTimeMillis(), System.currentTimeMillis(), KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL, 0, 0));
             return true;
         }
-        if ((event.mCodePoint == Constants.CODE_ENTER || event.mCodePoint == Constants.CODE_SPACE) && mPinyinIME.getState() == PinyinIME.ImeState.STATE_INPUT) {
+
+        if ((event.mCodePoint == Constants.CODE_ENTER || event.mCodePoint == Constants.CODE_SPACE) &&
+                (mPinyinIME.getState() == PinyinIME.ImeState.STATE_INPUT || mPinyinIME.getState() == PinyinIME.ImeState.STATE_COMPOSING)) {
             int key = KeyEvent.KEYCODE_UNKNOWN;
             switch (event.mCodePoint) {
                 case Constants.CODE_ENTER:
