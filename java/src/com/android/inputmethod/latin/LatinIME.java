@@ -938,6 +938,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private boolean hasPinyinIMECandidatesView = false;
     private void switchPinyinIMEMode() {
+        if (!hasSuggestionStripView()) {
+            return;
+        }
         if (isCurrentChinese()) {
             if (!hasPinyinIMECandidatesView) {
                 hasPinyinIMECandidatesView = true;
