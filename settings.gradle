@@ -1,3 +1,6 @@
-include ':app', ':tessercubecore', ':PinyinIME'
-rootProject.name = "Tessercube"
+include ':florisboard-master'
+include ':florisboard-master'
+include ':florisboard-master'
+include ':app', ':terraspherecore', ':PinyinIME'
+rootProject.name = "Terrasphere"
 
