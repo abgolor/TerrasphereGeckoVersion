@@ -26,7 +26,7 @@ import android.view.inputmethod.InputMethodSubtype;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.common.LocaleUtils;
 import com.android.inputmethod.latin.common.StringUtils;
-import com.sujitech.tessercubecore.common.DataTracking;
+import com.gecko.terraspherecore.common.DataTracking;
 
 import java.util.HashMap;
 import java.util.Locale;

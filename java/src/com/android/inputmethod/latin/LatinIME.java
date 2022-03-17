@@ -97,8 +97,8 @@ import com.android.inputmethod.latin.utils.StatsUtilsManager;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import com.android.inputmethod.latin.utils.ViewLayoutUtils;
 import com.android.inputmethod.pinyin.PinyinIME;
-import com.sujitech.tessercubecore.keyboard.KeyboardEncryptToolBar;
-import com.sujitech.tessercubecore.keyboard.KeyboardExtendView;
+import com.gecko.terraspherecore.keyboard.KeyboardEncryptToolBar;
+import com.gecko.terraspherecore.keyboard.KeyboardExtendView;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -873,6 +873,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mSuggestionStripView.setEncryptToolBarListener(this);
         }
         switchPinyinIMEMode();
+        if(mKeyboardExtendView != null){
+            mKeyboardExtendView.setEncryptToolbarListener(this);
+        }
 //        if (mKeyboardExtendView != null) {
 //            mKeyboardExtendView.setListener(this);
 //        }
@@ -1920,11 +1923,36 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // press matching call is {@link #onPressKey(int,int,boolean)} above.
     @Override
     public void onReleaseKey(final int primaryCode, final boolean withSliding) {
+
         if (BuildConfig.DEBUG) {
+            searchContact(requireAllText(), primaryCode);
             Log.i(TAG, "onReleaseKey: " + String.valueOf(primaryCode) + " " + String.valueOf(withSliding));
         }
         mKeyboardSwitcher.onReleaseKey(primaryCode, withSliding, getCurrentAutoCapsState(),
                 getCurrentRecapitalizeState());
+    }
+    
+    /*This watch the text as the user type and check if it contains "#". If it does then it 
+    automatically shows the list of contacts and search for the name of the contact user types 
+    */
+    private void searchContact(String textUserType, int primaryCode){
+        if(primaryCode == 35 || textUserType.contains("#")) {
+            if (textUserType.substring(textUserType.lastIndexOf("#")).length() > 0) {
+                mKeyboardExtendView.showLayout();
+                Log.i(TAG, "First row was called");
+                String contactName = textUserType.substring(textUserType.lastIndexOf("#") + 1);
+                ;
+                if (!contactName.trim().equals("")) {
+                    mKeyboardExtendView.searchContract(contactName);
+                } else {
+                    mKeyboardExtendView.searchContract("");
+                }
+            } else {
+                mKeyboardExtendView.hideLayout();
+            }
+        } else {
+            mKeyboardExtendView.hideLayout();
+        }
     }
 
     private HardwareEventDecoder getHardwareKeyEventDecoder(final int deviceId) {

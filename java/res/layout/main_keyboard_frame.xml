@@ -26,7 +26,7 @@
     android:orientation="vertical">
 
 
-    <com.sujitech.tessercubecore.keyboard.KeyboardExtendView
+    <com.gecko.terraspherecore.keyboard.KeyboardExtendView
         android:visibility="gone"
         android:id="@+id/keyboard_encrypt_view"
         android:layout_width="match_parent"

@@ -48,11 +48,11 @@
                  .setPackage("com.android.inputmethod.latin"));
          }
          </pre> -->
-    <permission android:name="com.sujitech.inputmethod.latin.HIDE_SOFT_INPUT"
+    <permission android:name="com.gecko.inputmethod.latin.HIDE_SOFT_INPUT"
                 android:protectionLevel="signature" />
 
     <application android:label="@string/english_ime_name"
-        android:name="com.sujitech.tessercubecore.App"
+        android:name="com.gecko.terraspherecore.App"
             android:icon="@mipmap/ic_launcher_tessercube_round"
             android:supportsRtl="true"
             android:allowBackup="true"

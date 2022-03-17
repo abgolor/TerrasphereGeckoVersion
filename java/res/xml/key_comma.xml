@@ -56,7 +56,7 @@
         </case>
         <default>
             <Key
-                latin:keySpec="!text/keyspec_comma"
+                latin:keySpec="#"
                 latin:keyLabelFlags="hasPopupHint"
                 latin:keyStyle="settingsMoreKeysStyle" />
         </default>

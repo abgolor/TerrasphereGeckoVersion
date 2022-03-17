@@ -41,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/config_suggestions_strip_horizontal_margin"
-        android:layout_marginRight="@dimen/config_suggestions_strip_horizontal_margin"
+        android:layout_marginRight="20dp"
         android:hapticFeedbackEnabled="false"
         android:soundEffectsEnabled="false" >
         <TextView
@@ -52,6 +52,17 @@
             android:textSize="16sp"
             style="?attr/suggestionWordStyle" />
     </LinearLayout>
+
+    <com.gecko.terraspherecore.keyboard.KeyboardPublicButton
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?android:attr/selectableItemBackground"
+        android:id="@+id/suggestions_strip_public_key"
+        android:layout_width="@dimen/config_suggestions_strip_edge_key_width"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        style="?attr/suggestionWordStyle" />
     <!--<ImageButton-->
         <!--android:id="@+id/suggestions_strip_voice_key"-->
         <!--android:layout_width="@dimen/config_suggestions_strip_edge_key_width"-->
@@ -61,9 +72,10 @@
         <!--android:layout_centerVertical="true"-->
         <!--android:contentDescription="@string/spoken_description_mic"-->
         <!--style="?attr/suggestionWordStyle" />-->
-    <com.sujitech.tessercubecore.keyboard.KeyboardEncryptButton
+    <com.gecko.terraspherecore.keyboard.KeyboardEncryptButton
         android:clickable="true"
         android:focusable="true"
+        android:visibility="gone"
         android:background="?android:attr/selectableItemBackground"
         android:id="@+id/suggestions_strip_encrypt_key"
         android:layout_width="@dimen/config_suggestions_strip_edge_key_width"

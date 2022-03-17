@@ -47,9 +47,10 @@ import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.settings.Settings;
 import com.android.inputmethod.latin.settings.SettingsValues;
 import com.android.inputmethod.latin.suggestions.MoreSuggestionsView.MoreSuggestionsListener;
-import com.sujitech.tessercubecore.keyboard.KeyboardEncryptButton;
-import com.sujitech.tessercubecore.keyboard.KeyboardEncryptToolBar;
-import com.sujitech.tessercubecore.keyboard.KeyboardExtendView;
+import com.gecko.terraspherecore.keyboard.KeyboardEncryptButton;
+import com.gecko.terraspherecore.keyboard.KeyboardEncryptToolBar;
+import com.gecko.terraspherecore.keyboard.KeyboardExtendView;
+import com.gecko.terraspherecore.keyboard.KeyboardPublicButton;
 
 import java.util.ArrayList;
 
@@ -84,6 +85,8 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     private KeyboardExtendView mKeyboardExtendView;
 //    private final View mEncryptToolBarContainer;
     private KeyboardEncryptToolBar mEncryptToolBar;
+
+    private final KeyboardPublicButton mPublicKey;
 
     private final View mMoreSuggestionsContainer;
     private final MoreSuggestionsView mMoreSuggestionsView;
@@ -157,6 +160,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         inflater.inflate(R.layout.suggestions_strip, this);
 
         mSuggestionsStrip = (ViewGroup)findViewById(R.id.suggestions_strip);
+        mPublicKey = (KeyboardPublicButton) findViewById(R.id.suggestions_strip_public_key);
 //        mVoiceKey = (ImageButton)findViewById(R.id.suggestions_strip_voice_key);
         mEncryptKey = (KeyboardEncryptButton) findViewById(R.id.suggestions_strip_encrypt_key);
 //        mEncryptToolBar = findViewById(R.id.keyboard_encrypt_toolbar);
@@ -200,6 +204,12 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 //        mVoiceKey.setImageDrawable(iconVoice);
 //        mVoiceKey.setOnClickListener(this);
 //        mEncryptKey.setImageDrawable(iconVoice);
+        mPublicKey.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mEncryptToolBar.sharePubKey();
+            }
+        });
         mEncryptKey.setOnClickListener(this);
     }
 
